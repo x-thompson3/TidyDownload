@@ -42,3 +42,9 @@ def main():
 
 if __name__ == '__main__':
     main()
+    #input('\nThanks for using TidyDL!\nPress <any key> to Exit.')
+    try:
+        print('\nThanks for using TidyDL!')
+        os.system('pause')  #windows, doesn't require enter
+    except whatever:
+        os.system('read -p "Press any key to continue"') #linux
