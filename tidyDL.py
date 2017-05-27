@@ -1,8 +1,10 @@
+from send2trash import send2trash
+
 import os
 import string
 import shutil
 
-DOWNLOADS = os.getcwd()
+DOWNLOADS = 'C:\\Users\\Xander\\Downloads'
 TOP = 'C:\\Users\\Xander'
 FLAG = '~'
 SEARCH = ['Documents', 'Pictures', 'Music', 'Zips']
