@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import os
 import string
 import shutil
@@ -5,11 +7,10 @@ from datetime import datetime
 from datetime import timedelta
 import time
 import levensh
-import Tkinter
 
 TOP = os.path.expanduser('~')
-FLAG = '<<'
-SEARCH = ['Downloads','Documents', 'Pictures', 'Desktop', 'Scripts'] ## Add more directories if needed
+FLAG = '<<' 
+SEARCH = ['Downloads', 'Movies', 'Documents', 'Pictures', 'Desktop', 'Scripts'] ## Add more directories if needed
 
 def find_all_paths(target_dir):
     '''
@@ -83,14 +84,14 @@ def main():
                 if f.count(FLAG) == 1:
                     num+=1
                     target_dir, name = string.split(f, FLAG, maxsplit=1) ## Split to find target directory
-                    if name == '':
+                    if name == '' or target_dir == '':
                         failed+=1
-                        failure.append('{} ERROR: {}'.format(f, 'must name file post-<<'))
+                        failure.append('{} | ERROR: must name file Dest<<Name'.format(f))
                         break
                     paths = find_all_paths(target_dir)
                     if paths == []: ## No directory found
                         failed+=1
-                        failure.append(f)
+                        failure.append('{} | ERROR: destination not found {}'.format(f,target_dir))
 
                     elif len(paths) > 1: ## Multiple Directories found
                         print 'Multiple destinations found, please select one:'
@@ -112,7 +113,7 @@ def main():
                             shutil.move(os.path.join(root,f), os.path.join(chosen, name))
                         else: ## File already exists in target_dir
                             failed+=1
-                            failure.append('{} already exists in {}'.format(name,chosen))
+                            failure.append('{} | ERROR: file already exists in {}'.format(name,chosen))
 
                     else: ## One Directory found
                         if no_dupes(name, paths[0]): ## Okay to move file
@@ -121,18 +122,18 @@ def main():
                             shutil.move(os.path.join(root,f), os.path.join(paths[0], name))
                         else: ## File already exists in target_dir
                             failed+=1
-                            failure.append('{} already exists in {}'.format(name,paths[0]))
+                            failure.append('{} | ERROR: file already exists in {}'.format(name,paths[0]))
 
     ## THEN Process each FOLDER in the folder hierarchy
     for sub in SEARCH:
         for root, dirs, files in os.walk(os.path.join(TOP,sub)):
-            for d  in dirs:
+            for d in dirs:
                 if d.count(FLAG) == 1:
                     num+=1
                     target_dir, name = string.split(d, FLAG, maxsplit=1) ## Split to find target directory
                     if name == '':
                         failed+=1
-                        failure.append('{} ERROR: {}'.format(f, 'must name file post-<<'))
+                        failure.append('{} | ERROR: {}'.format(f, 'must name file post-<<'))
                         break
                     paths = find_all_paths(target_dir)
                     if paths == []: ## No directory found
@@ -159,7 +160,7 @@ def main():
                             shutil.move(os.path.join(root,d), os.path.join(chosen, name))
                         else: ## File already exists in target_dir
                             failed+=1
-                            failure.append('{} already exists in {}'.format(name,chosen))
+                            failure.append('{} | ERROR: file already exists in {}'.format(name,chosen))
 
                     else: ## One Directory found
                         if no_dupes(name, paths[0]): ## Okay to move file
@@ -168,7 +169,7 @@ def main():
                             shutil.move(os.path.join(root,d), os.path.join(paths[0], name))
                         else: ## File already exists in target_dir
                             failed+=1
-                            failure.append('{} already exists in {}'.format(name, paths[0]))
+                            failure.append('{} | ERROR: file already exists in {}'.format(name, paths[0]))
 
     print '====================\nProcessed {} files, {} failed{}'.format(num, failed, ':' if failed > 0 else '!')
     with open('Tele_log.txt', 'a') as logger:
