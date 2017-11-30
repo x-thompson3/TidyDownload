@@ -81,7 +81,8 @@ def scrape(TW, top_label, details_label, success_box, failed_box):
                 if f.count(FLAG) == 1:
                     num+=1 
                     target_dir, name = string.split(f, FLAG, maxsplit=1) ## Split to find target directory
-
+                    target_dir = target_dir.strip()
+                    name = name.strip()
                     if name == '' or target_dir == '':
                         failed+=1
                         failed_box.insert(tk.END, f)
@@ -89,7 +90,7 @@ def scrape(TW, top_label, details_label, success_box, failed_box):
                     else:
                         paths = find_all_paths(target_dir)
                         if paths == []: ## No directory found
-                            print('No directory found: {}'.format(target_dir))
+                            #print('No directory found: {}'.format(target_dir))
                             failed+=1
                             failed_box.insert(tk.END, name)
                             d_list.append( (0, '{}'.format(name), 'ERROR: directory \'{}\' not found'.format(target_dir)) )
@@ -100,34 +101,34 @@ def scrape(TW, top_label, details_label, success_box, failed_box):
                             ## MOVE THE FILE & LOG IT
                             if no_dupes(name, dest): ## Okay to move file
                                 log_it(name, dest)
-                                print('Moved to: {}'.format(target_dir))
+                                #print('Moved to: {}'.format(target_dir))
                                 success_box.insert(tk.END, name)
                                 d_list.append( (1, '{}'.format(name), 'Moved to: {}'.format(dest) ))
-                                log_it(name, paths[0])
-                                print '{} <-- {}'.format(dest, name, root)
+                                #log_it(name, paths[0])
+                                #print '{} <-- {}'.format(dest, name, root)
                                 shutil.move(os.path.join(root,f), os.path.join(dest, name))
                             else: ## File already exists in target_dir
-                                print('Dupe in: {}'.format(target_dir))
+                                #print('Dupe in: {}'.format(target_dir))
                                 failed+=1
                                 failed_box.insert(tk.END, name)
                                 d_list.append( (0, '{}'.format(name), 'ERROR: {} already exists in directory \'{}\''.format(name, target_dir)) )
                         
                         else: #More than one directory found
                             '''Prompt the user for which destination'''
-                            print('More than one directory: {}'.format(target_dir))
+                            #print('More than one directory: {}'.format(target_dir))
                             dest = choose_from(TW, name, paths)
-                            print('Selected a ')
+                            #print('Selected a ')
                             ## MOVE THE FILE & LOG IT
                             if no_dupes(name, dest): ## Okay to move file
                                 log_it(name, dest)
-                                print('Moved to: {}'.format(target_dir))
+                                #print('Moved to: {}'.format(target_dir))
                                 success_box.insert(tk.END, name)
                                 d_list.append( (1, '{}'.format(name), 'Moved to: {}'.format(dest) ))
-                                log_it(name, paths[0])
-                                print '{} <-- {}'.format(dest, name, root)
+                                #log_it(name, paths[0])
+                                #print '{} <-- {}'.format(dest, name, root)
                                 shutil.move(os.path.join(root,f), os.path.join(dest, name))
                             else: ## File already exists in target_dir
-                                print('Dupe in: {}'.format(target_dir))
+                                #print('Dupe in: {}'.format(target_dir))
                                 failed+=1
                                 failed_box.insert(tk.END, name)
                                 d_list.append( (0, '{}'.format(name), 'ERROR: {} already exists in directory \'{}\''.format(name, target_dir)) )
@@ -139,7 +140,8 @@ def scrape(TW, top_label, details_label, success_box, failed_box):
                 if d.count(FLAG) == 1:
                     num+=1 
                     target_dir, name = string.split(d, FLAG, maxsplit=1) ## Split to find target directory
-
+                    target_dir = target_dir.strip()
+                    name = name.strip()
                     if name == '' or target_dir == '':
                         failed+=1
                         failed_box.insert(tk.END, d)
@@ -161,8 +163,8 @@ def scrape(TW, top_label, details_label, success_box, failed_box):
                                 #print('Moved to: {}'.format(target_dir))
                                 success_box.insert(tk.END, name)
                                 d_list.append( (1, '{}'.format(name), 'Moved to: {}'.format(dest) ))
-                                log_it(name, paths[0])
-                                print '{} <-- {}'.format(dest, name, root)
+                                #log_it(name, paths[0])
+                                #print '{} <-- {}'.format(dest, name, root)
                                 shutil.move(os.path.join(root,d), os.path.join(dest, name))
                             else: ## File already exists in target_dir
                                 #print('Dupe in: {}'.format(target_dir))
@@ -180,8 +182,8 @@ def scrape(TW, top_label, details_label, success_box, failed_box):
                                 #print('Moved to: {}'.format(target_dir))
                                 success_box.insert(tk.END, name)
                                 d_list.append( (1, '{}'.format(name), 'Moved to: {}'.format(dest) ))
-                                log_it(name, paths[0])
-                                print '{} <-- {}'.format(dest, name, root)
+                                #log_it(name, paths[0])
+                                #print '{} <-- {}'.format(dest, name, root)
                                 shutil.move(os.path.join(root,d), os.path.join(dest, name))
                             else: ## File already exists in target_dir
                                 #print('Dupe in: {}'.format(target_dir))
@@ -191,6 +193,7 @@ def scrape(TW, top_label, details_label, success_box, failed_box):
                     top_label.set('Files found: {}, failed: {}'.format(num, failed))
 
     if num == 0:
+        details_label.set('\n')
         top_label.set('No files found. You\'re Tidy!')
 
     #print '====================\nProcessed {} files, {} failed{}'.format(num, failed, ':' if failed > 0 else '!')

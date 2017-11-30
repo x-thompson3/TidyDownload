@@ -10,7 +10,7 @@ import levensh
 
 TOP = os.path.expanduser('~')
 FLAG = '<<' 
-SEARCH = ['Downloads', 'Movies', 'Documents', 'Pictures', 'Desktop', 'Scripts'] ## Add more directories if needed
+SEARCH = ['Downloads', 'Movies', 'Documents', 'Music', 'Pictures', 'Desktop', 'Scripts'] ## Add more directories if needed
 
 def find_all_paths(target_dir):
     '''
@@ -23,7 +23,7 @@ def find_all_paths(target_dir):
     paths = []
     autocorrect = []
     for sub in SEARCH:
-        if sub == target_dir:
+        if sub.lower() == target_dir.lower():
             paths.append(os.path.join(TOP, sub))
         for root, dirs, files in os.walk(os.path.join(TOP,sub)):
             for a_dir in dirs:
@@ -83,7 +83,9 @@ def main():
             for f in files:
                 if f.count(FLAG) == 1:
                     num+=1
-                    target_dir, name = string.split(f, FLAG, maxsplit=1) ## Split to find target directory
+                    target_dir, name = string.split(f.strip(), FLAG, maxsplit=1) ## Split to find target directory
+                    target_dir = target_dir.strip()
+                    name = name.strip()
                     if name == '' or target_dir == '':
                         failed+=1
                         failure.append('{} | ERROR: must name file Dest<<Name'.format(f))
@@ -94,22 +96,23 @@ def main():
                         failure.append('{} | ERROR: destination not found {}'.format(f,target_dir))
 
                     elif len(paths) > 1: ## Multiple Directories found
-                        print 'Multiple destinations found, please select one:'
+                        print 'Multiple destinations found for {}, please select one:'.format(name)
                         for x in range(len(paths)): 
                             print '{}: {}'.format(x+1, paths[x])
                         chosen = paths[0]
                         while True: 
                             try: ## Force user to select a directory
                                 n = int(raw_input('> '))-1
-                                if n not in range(1, len(paths)+1):
+                                if n not in range(0, len(paths)+1):
                                     raise ValueError('')
-                                chosen = paths[n]
-                                break
+                                else:
+                                    chosen = paths[n]
+                                    break
                             except:
                                 print 'Please choose a legal integer.'
                         if no_dupes(name, chosen): ## Okay to move file
                             log_it(name, chosen)
-                            print '{} <-- {}'.format(paths[0], f)
+                            print '{} --> {}'.format(name, chosen)
                             shutil.move(os.path.join(root,f), os.path.join(chosen, name))
                         else: ## File already exists in target_dir
                             failed+=1
@@ -118,7 +121,7 @@ def main():
                     else: ## One Directory found
                         if no_dupes(name, paths[0]): ## Okay to move file
                             log_it(name, paths[0])
-                            print '{} <-- {}'.format(paths[0], name, root)
+                            print '{} --> {}'.format(name, paths[0])
                             shutil.move(os.path.join(root,f), os.path.join(paths[0], name))
                         else: ## File already exists in target_dir
                             failed+=1
@@ -130,7 +133,9 @@ def main():
             for d in dirs:
                 if d.count(FLAG) == 1:
                     num+=1
-                    target_dir, name = string.split(d, FLAG, maxsplit=1) ## Split to find target directory
+                    target_dir, name = string.split(d.strip(), FLAG, maxsplit=1) ## Split to find target directory
+                    target_dir = target_dir.strip()
+                    name = name.strip()
                     if name == '':
                         failed+=1
                         failure.append('{} | ERROR: {}'.format(f, 'must name file post-<<'))
@@ -141,22 +146,23 @@ def main():
                         failure.append(d)
 
                     elif len(paths) > 1: ## Multiple Directories found
-                        print 'Multiple destinations found, please select one:'
+                        print 'Multiple destinations found for {}, please select one:'.format(name)
                         for x in range(len(paths)): 
                             print '{}: {}'.format(x+1, paths[x]) 
                         chosen = paths[0]
                         while True: 
                             try: ## Force user to select a directory
                                 n = int(raw_input('> '))-1
-                                if n not in range(1, len(paths)+1):
+                                if n not in range(0, len(paths)+1):
                                     raise ValueError('')
-                                chosen = paths[n]
-                                break
+                                else:
+                                    chosen = paths[n]
+                                    break
                             except:
                                 print 'Please choose a legal integer.'
                         if no_dupes(name, chosen): ## Okay to move file
                             log_it(name, chosen)
-                            print '{} <-- {}'.format(paths[0], d)
+                            print '{} --> {}'.format(name, chosen)
                             shutil.move(os.path.join(root,d), os.path.join(chosen, name))
                         else: ## File already exists in target_dir
                             failed+=1
@@ -165,7 +171,7 @@ def main():
                     else: ## One Directory found
                         if no_dupes(name, paths[0]): ## Okay to move file
                             log_it(name, paths[0])
-                            print '{} <-- {}'.format(paths[0], name, root)
+                            print '{} --> {}'.format(name, paths[0])
                             shutil.move(os.path.join(root,d), os.path.join(paths[0], name))
                         else: ## File already exists in target_dir
                             failed+=1
