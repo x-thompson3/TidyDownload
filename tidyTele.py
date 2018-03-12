@@ -7,9 +7,10 @@ from datetime import datetime
 from datetime import timedelta
 import time
 import levensh
+from sys import platform
 
 TOP = os.path.expanduser('~')
-FLAG = '<<' 
+FLAG = '+=' if platform == 'win32' else '<<'
 SEARCH = ['Downloads', 'Movies', 'Documents', 'Music', 'Pictures', 'Desktop', 'Scripts'] ## Add more directories if needed
 
 def find_all_paths(target_dir):
