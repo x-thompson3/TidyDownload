@@ -81,3 +81,5 @@ $RECYCLE.BIN/
 *.lnk
 Tele_log.txt
 levensh.pyc
+*.zip
+Tele_log_G.txt
